@@ -1,0 +1,23 @@
+- name: Installing nginx
+  ansible.builtin.apt:
+    name: nginx=1.18.0-6ubuntu14.4
+    state: fixed
+    update_cache: yes
+    autoremove: yes
+
+- name: Delete /var/www/html
+  ansible.builtin.file:
+    path: "/var/www/html"
+    state: "absent"
+
+- name: Copy default index.html
+  ansible.builtin.copy:
+    src: "./files/html/"
+    dest: "/var/www/html/"
+    mode: "0644"
+
+- name: Replace nginx configuration
+  ansible.builtin.template:
+    src: "./templates/default.ubuntu.conf.j2"
+    dest: "/etc/nginx/sites-available/default"
+    mode: "0644"

@@ -1,0 +1,28 @@
+- name: Install EPEL realeses
+  ansible.builtin.yum:
+    name: epel-release
+    update_cache: yes
+    state: latest
+
+- name: Installing nginx
+  ansible.builtin.yum:
+    name: nginx
+    state: present
+    update_cache: yes
+
+- name: Delete /usr/share/nginx/html
+  ansible.builtin.file:
+    path: "usr/share/nginx/html"
+    state: "absent"
+
+- name: Copy default index.html
+  ansible.builtin.copy:
+    src: "./files/html/"
+    dest: "usr/share/nginx/html/"
+    mode: "0644"
+
+- name: Replace nginx configuration
+  ansible.builtin.template:
+    src: "./templates/default.centos.conf.j2"
+    dest: "/etc/nginx/sites-available/default.conf"
+    mode: "0644"
